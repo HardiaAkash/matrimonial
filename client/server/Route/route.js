@@ -3,8 +3,8 @@ const router = express.Router()
 const multer = require('multer');
 const { authorizeRoles, isAuthJWT } = require("../Utils/jwt");
 const { addAdmin, adminLogin } = require("../Controller/AdminAuth");
-const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser, forgotPwd, resetPassword, changeUserPwd, verifyUser } = require("../Controller/UserAuth");
-const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID, changeMatchStatus } = require("../Controller/UserFormAuth");
+const { addUser, userLogin, deleteUser, updateUser, logoutUser, getUserByID, viewUser, forgotPwd, resetPassword, changeUserPwd, verifyUser, deleteUserReq, getDeleteUserRequests } = require("../Controller/UserAuth");
+const { addForm, editFormById, changeStatusForm, uploadImage, viewForm, deleteFormById, getFormByUserID, changeMatchStatus, approvedForm } = require("../Controller/UserFormAuth");
 const { addCounVideo, getAllCounsVideo } = require("../Controller/VideoAuth");
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -23,6 +23,10 @@ router.route("/forgotpassword").post(forgotPwd)
 router.route("/resetpassword").post(resetPassword)
 router.route("/changeUserPassword").post(isAuthJWT,changeUserPwd)
 router.route("/verifyTokenUser/:token").get(verifyUser)
+router.route("/deleteUserReq").post(isAuthJWT, deleteUserReq)
+router.route("/getDeleteReq").get(isAuthJWT, authorizeRoles("Admin"),getDeleteUserRequests)
+
+
 ////////////////////////////form/////////
 router.route("/uploadImage").post(isAuthJWT, upload.single('file'),uploadImage)
 router.route("/addForm").post(isAuthJWT, addForm)
@@ -34,5 +38,5 @@ router.route("/getFormByUser").post(isAuthJWT,getFormByUserID)
 router.route("/counselVideo").post(isAuthJWT,authorizeRoles("Admin"),addCounVideo)
 router.route("/getCounselVideo").get(isAuthJWT, getAllCounsVideo)
 router.route("/isMatched/:id").post(isAuthJWT, authorizeRoles("Admin"),changeMatchStatus)
-
+router.route("/approvedForm").get(isAuthJWT, authorizeRoles("Admin"), approvedForm)
 module.exports = router;
